@@ -1,3 +1,4 @@
+// Package router is the http controller for PDV functionalities.
 package router
 
 import (

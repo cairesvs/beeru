@@ -1,3 +1,4 @@
+// Package model that contains the struct for PDV represatation.
 package model
 
 import (

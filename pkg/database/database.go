@@ -1,15 +1,17 @@
+// Package database responsible for database bootstrap and connection.
 package database
 
 import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 	"sync"
 
 	_ "github.com/lib/pq"
 
+	"github.com/cairesvs/beeru/pkg/config"
 	"github.com/cairesvs/beeru/pkg/data"
+	"github.com/cairesvs/beeru/pkg/logger"
 	"github.com/cairesvs/beeru/pkg/model"
 )
 
@@ -32,12 +34,12 @@ func getPDVS() *model.PDVSlice {
 	fileOnce.Do(func() {
 		data, err := data.Asset("data/pdvs.json")
 		if err != nil {
-			log.Fatal("Couldn't load base json")
+			logger.Fatal("Couldn't load base json")
 		}
 		pdvs := &model.PDVSlice{}
 		err = json.Unmarshal(data, pdvs)
 		if err != nil {
-			log.Fatal("Couldn't unmarshall ", err)
+			logger.Fatalf("Couldn't unmarshall %s", err)
 		}
 		PDVS = pdvs
 	})
@@ -47,9 +49,9 @@ func getPDVS() *model.PDVSlice {
 // GetInstance return wrapper for sql.DB
 func GetInstance() *BeeruDatabase {
 	databaseOnce.Do(func() {
-		db, err := sql.Open("postgres", "user=caires dbname=postgres sslmode=disable")
+		db, err := sql.Open("postgres", config.Get("pgConnection"))
 		if err != nil {
-			log.Fatal(err)
+			logger.Fatal(err)
 		}
 		Database = &BeeruDatabase{db}
 	})
@@ -68,7 +70,7 @@ func (b *BeeruDatabase) LoadToDatabase() {
 		query := fmt.Sprintf("INSERT INTO pdv(id, trading_name,owner_name,document,coverage_area, address) VALUES($1,$2,$3,$4, ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326),ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326))", string(bytesCoverageArea), string(bytesAddress))
 		_, err := b.DB.Exec(query, pdv.ID, pdv.TradingName, pdv.OwnerName, pdv.Document)
 		if err != nil {
-			log.Println(err, pdv.ID)
+			logger.Errorf("Error inserting base data %s %s", err, pdv.ID)
 		}
 	}
 }

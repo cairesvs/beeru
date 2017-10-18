@@ -1,0 +1,10 @@
+FROM golang:1.8.3-alpine
+RUN apk add --no-cache git tar wget make gcc musl-dev
+RUN wget -qO- https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-amd64.tar.gz | tar xvz --strip-components=1 -C /go/bin/ linux-amd64/glide
+ADD glide.yaml /go/src/github.com/cairesvs/beeru/glide.yaml
+ADD glide.lock /go/src/github.com/cairesvs/beeru/glide.lock
+WORKDIR /go/src/github.com/cairesvs/beeru
+RUN glide install
+ADD . /go/src/github.com/cairesvs/beeru
+RUN make install
+ENTRYPOINT ["/go/bin/beeru"]
