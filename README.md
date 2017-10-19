@@ -27,13 +27,23 @@ To see the `beeru` documentation go to [Beeru Docs](http://localhost:6060/pkg/gi
 
 ## How to Run
 
-### Create Go dir:
+### Docker
+
+You can simply run using docker compose:
+
+```sh
+docker-compose up
+```
+
+### Development
+
+#### Create Go dir:
 
 ```sh
 mkdir $HOME/go
 ```
 
-### Install Go Lang \o/:
+#### Install Go Lang \o/:
 
 If you are using mac, you can use brew:
 
@@ -52,13 +62,13 @@ export PATH=$PATH:$GOPATH/bin
 export PATH=$PATH:$GOROOT/bin
 ```
 
-### Install Glide (Go package manager):
+#### Install Glide (Go package manager):
 
 ```sh
 curl https://glide.sh/get | sh
 ```
 
-### Postgres
+#### Postgres
 
 We use postgres and postgis. If you are using mac you can use brew as well.
 
@@ -67,7 +77,7 @@ brew install postgres
 brew install postgis
 ```
 
-### Cloning this repo
+#### Cloning this repo
 
 We need to clone it in Go structure:
 
@@ -78,7 +88,7 @@ git clone git@github.com:cairesvs/beeru.git
 cd beeru
 ```
 
-### Install dependencies
+#### Install dependencies
 
 ```sh
 make dependencies

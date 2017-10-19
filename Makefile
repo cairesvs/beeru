@@ -48,7 +48,7 @@ docker/tag:
 	docker tag caires/beeru caires/beeru:${DOCKER_IMAGE_VERSION}
 
 docker/run:
-	docker run -ti -p 8001:8000 --rm caires/beeru:${DOCKER_IMAGE_VERSION}
+	docker run -ti -p 8000:8000 --rm caires/beeru:${DOCKER_IMAGE_VERSION}
 
 docker/run/local:
 	docker build -t caires/beeru:build -f Dockerfile.build .
