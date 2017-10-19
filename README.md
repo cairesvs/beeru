@@ -77,6 +77,12 @@ brew install postgres
 brew install postgis
 ```
 
+Or you can use makefile tasks:
+```sh
+make postgres/up
+make postgres/down
+```
+
 #### Cloning this repo
 
 We need to clone it in Go structure:

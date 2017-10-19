@@ -21,7 +21,7 @@ var config = map[string]string{
 	"logLevel":     getEnvVarWithDefault("LOG_LEVEL", "debug"),
 	"version":      getEnvVarWithDefault("VERSION", "detached"),
 	"httpPort":     getEnvVarWithDefault("HTTP_PORT", ":8000"),
-	"pgConnection": getEnvVarWithDefault("PG_CONNECTION", "user=caires dbname=postgres sslmode=disable"),
+	"pgConnection": getEnvVarWithDefault("PG_CONNECTION", "user=postgres host=localhost dbname=postgres port=5433 sslmode=disable"),
 }
 
 // Get config from config map
