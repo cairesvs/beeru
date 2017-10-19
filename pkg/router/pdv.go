@@ -69,7 +69,7 @@ func CreatePDV(w http.ResponseWriter, r *http.Request) {
 		Database: database.GetInstance(),
 		PDV:      p,
 	}
-	err = database.CreatePDV(input)
+	_, err = database.CreatePDV(input)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write(jsonError(fmt.Sprintf("%s", err)))

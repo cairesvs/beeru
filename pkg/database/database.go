@@ -74,3 +74,10 @@ func (b *BeeruDatabase) LoadToDatabase() {
 		}
 	}
 }
+
+func (b *BeeruDatabase) Truncate() {
+	_, err := b.DB.Exec("TRUNCATE pdv")
+	if err != nil {
+		logger.Errorf("Couldn't truncate pdv table %s", err)
+	}
+}

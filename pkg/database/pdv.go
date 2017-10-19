@@ -65,20 +65,21 @@ type PDVCreateInput struct {
 }
 
 // CreatePDV creates PDV on database
-func CreatePDV(input *PDVCreateInput) error {
+func CreatePDV(input *PDVCreateInput) (int64, error) {
 	db := input.Database.DB
 	pdv := input.PDV
 	if len(pdv.Document) != 17 {
-		return fmt.Errorf("The Document must have 17 digits")
+		return 0, fmt.Errorf("The Document must have 17 digits")
 	}
 	bytesCoverageArea, _ := json.Marshal(pdv.CoverageArea)
 	bytesAddress, _ := json.Marshal(pdv.Address)
-	query := fmt.Sprintf("INSERT INTO pdv(trading_name,owner_name,document,coverage_area, address) VALUES($1,$2,$3, ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326),ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326))", string(bytesCoverageArea), string(bytesAddress))
-	_, err := db.Exec(query, pdv.TradingName, pdv.OwnerName, pdv.Document)
+	query := fmt.Sprintf("INSERT INTO pdv(trading_name,owner_name,document,coverage_area, address) VALUES($1,$2,$3, ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326),ST_SetSRID(ST_GeomFromGeoJSON('%s'), 4326)) RETURNING id", string(bytesCoverageArea), string(bytesAddress))
+	var id int64
+	err := db.QueryRow(query, pdv.TradingName, pdv.OwnerName, pdv.Document).Scan(&id)
 	if err != nil {
-		return fmt.Errorf("The query is malformed %s", err)
+		return 0, fmt.Errorf("The query is malformed %s", err)
 	}
-	return nil
+	return id, nil
 }
 
 // PDVFindInput Input for find PDVs for given point
