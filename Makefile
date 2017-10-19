@@ -38,17 +38,27 @@ install:
 	CGO_ENABLED=0 go install -v -a --installsuffix cgo --ldflags="-s"
 
 docker/build:
-	docker build -t cairesvs/beeru:build -f Dockerfile.build .
+	docker build -t caires/beeru:build -f Dockerfile.build .
 
-docker/image: docker_build
-	docker run --rm --entrypoint /bin/sh -v ${PWD}:/out:rw cairesvs/beeru:build -c "cp /go/bin/beeru /out/beeru"
-	docker build -t cairesvs/beeru .
+docker/image: docker/build
+	docker run --rm --entrypoint /bin/sh -v ${PWD}:/out:rw caires/beeru:build -c "cp /go/bin/beeru /out/beeru"
+	docker build -t caires/beeru .
 
 docker/tag:
-	docker tag cairesvs/beeru cairesvs/beeru:${DOCKER_IMAGE_VERSION}
+	docker tag caires/beeru caires/beeru:${DOCKER_IMAGE_VERSION}
 
 docker/run:
-	docker run -ti -p 8001:8000 --rm cairesvs/beeru:${DOCKER_IMAGE_VERSION}
+	docker run -ti -p 8001:8000 --rm caires/beeru:${DOCKER_IMAGE_VERSION}
+
+docker/run/local:
+	docker build -t caires/beeru:build -f Dockerfile.build .
+	docker run --rm --entrypoint /bin/sh -v ${PWD}:/out:rw caires/beeru:build -c "cp /go/bin/beeru /out/beeru"
+	docker build -t caires/beeru:local .
+	docker run --name postgis -v ${PWD}/sql:/docker-entrypoint-initdb.d/ -e POSTGRES_PASSWORD=123 -d mdillon/postgis
+	docker run -ti --link postgis:postgis -p 8000:8000 -e "PG_CONNECTION=user=postgres dbname=postgres sslmode=disable password=123 host=postgis" --rm caires/beeru:local
+
+docker/stop/local:
+	docker rm -f postgis
 
 docker/push:
-	docker push cairesvs/beeru:${DOCKER_IMAGE_VERSION}
+	docker push caires/beeru:${DOCKER_IMAGE_VERSION}

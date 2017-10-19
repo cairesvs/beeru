@@ -4,6 +4,8 @@ Beeru is responsible for Get, Create and Find Points of sale aka "Pontos de vend
 
 ![beeru](https://media.giphy.com/media/osbU9PXXgwHuM/giphy.gif)
 
+![Docker](https://hub.docker.com/r/caires/beeru/)
+
 > MMM
 
 ## Architecture
@@ -87,6 +89,29 @@ And finally:
 ```sh
 make run
 ```
+
+Or you can run with docker locally:
+
+```sh
+make docker/run/local 
+```
+
+To stop via docker just:
+
+```sh
+make docker/stop/local
+```
+
+## Routes
+
+For now we have three routes:
+
+`GET /pdv/:id`
+
+`POST /pdv` - receives a JSON similar to [this](../master/test.json)
+
+`GET /pdvs?lat=valueLat&lng=valueLng`
+
 
 ## How to Test
 
